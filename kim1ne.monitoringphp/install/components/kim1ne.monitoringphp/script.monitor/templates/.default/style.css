@@ -1,0 +1,121 @@
+.script-monitor {
+    padding: 20px;
+}
+
+.monitor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.monitor-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+#show-history-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.running-processes {
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.available-scripts {
+    background: #fff;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#resume-monitoring {
+    margin-bottom: 15px;
+    padding: 5px 15px;
+    background: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#resume-monitoring:hover {
+    background: #f57c00;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+.progress-bar-container {
+    width: 150px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 24px;
+    background: #4caf50;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: #333;
+    white-space: nowrap;
+}
+
+button {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.start-script {
+    background: #2196f3;
+    color: white;
+}
+
+.start-script:hover {
+    background: #1976d2;
+}
+
+.stop-process {
+    background: #f44336;
+    color: white;
+}
+
+.stop-process:hover {
+    background: #d32f2f;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
