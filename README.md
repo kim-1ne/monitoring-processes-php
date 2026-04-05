@@ -52,7 +52,7 @@ $signal = ServiceLocator::getInstance()->get(Signal::class);
 В самом начале выполнения скрипта нужно зарегистрировать обработку сигналов. чтобы скрипт умел обрабатывать heartbeat и правильно завершатся для статистики. Нужно вызвать метод `registerSignals`, который лежит в трейте.
 Чтобы скрипт умел присылать понятный heartbeat-статус, он должен переопределить метод heartBeat из трейта.
 
-[Пример реализации скрипта из директории /local/php_interface/scripts/](/kim-1ne/monitoring-processes-php/tree/master/kim1ne.monitoringphp/examples/my_script.php)
+[Пример реализации скрипта из директории /local/php_interface/scripts/](https://github.com/kim-1ne/monitoring-processes-php/tree/master/kim1ne.monitoringphp/examples/my_script.php)
 
 ## Известные проблемы
 - Когда скрипт php завершается с ошибкой `allowed memory size` его невозможно перехватить чтобы записать окончание работы скрипта с ошибкой. SIGKILL не перехватывается ничем.
