@@ -4,6 +4,7 @@ namespace Kim1ne\MonitoringPhp\Events;
 
 use Bitrix\Main\DI\ServiceLocator;
 use Bitrix\Main\Event;
+use Bitrix\Main\EventManager;
 use Kim1ne\MonitoringPhp\Cli\ProcessManager;
 use Kim1ne\MonitoringPhp\Cli\Repository\PidHistoryEventRepository;
 use Kim1ne\MonitoringPhp\Cli\Script\ScriptPath;
@@ -15,10 +16,32 @@ class OnProlog
 {
     public static function init(): void
     {
+        self::setAdminMenu();
         self::registerServices();
     }
 
-    public static function registerServices(): void
+    private static function setAdminMenu(): void
+    {
+        $eventManager = EventManager::getInstance();
+
+        $eventManager->addEventHandler(
+            'main',
+            'OnBuildGlobalMenu',
+            function (array $tabs, array &$items) {
+                $items[] = [
+                    'parent_menu' => 'global_menu_settings',
+                    'section' => 'kim1ne_monitoring_php',
+                    'sort' => 2,
+                    'text' => 'Мониторинг PHP процессов (kim1ne.monitoringphp)',
+                    'title' => 'Мониторинг PHP процессов (kim1ne.monitoringphp)',
+                    'url' => 'kim1ne_monitoring.php',
+                    'more_url' => []
+                ];
+            }
+        );
+    }
+
+    private static function registerServices(): void
     {
         ServiceLocator::getInstance()->addInstanceLazy(ProcessManager::class, [
             'constructor' => static function (): ProcessManager {
