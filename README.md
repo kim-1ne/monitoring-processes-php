@@ -39,7 +39,7 @@ $eventManager = EventManager::getInstance()->addEventHandler(
 );
 ```
 
-## API
+## Принцип работы
 
 Чтобы скрипт умел обрабатывать `heartbeat` он должен насследовать трейт `Kim1ne\MonitoringPhp\Cli\Trait\HeartbeatCapableTrait`.
 Трейт попросит обязательный метод `getSignal`. Его можно будет получить так:
@@ -53,6 +53,62 @@ $signal = ServiceLocator::getInstance()->get(Signal::class);
 Чтобы скрипт умел присылать понятный heartbeat-статус, он должен переопределить метод heartBeat из трейта.
 
 [Пример реализации скрипта из директории /local/php_interface/scripts/](https://github.com/kim-1ne/monitoring-processes-php/tree/master/kim1ne.monitoringphp/examples/my_script.php)
+
+# API
+
+### `Kim1ne\MonitoringPhp\Cli\ProcessManager`
+Сердце модуля. Отвечает за всю логику работы.
+```php
+use Bitrix\Main\DI\ServiceLocator;
+use \Kim1ne\MonitoringPhp\Cli\ProcessManager;
+
+$processManager = ServiceLocator::getInstance()->get(ProcessManager::class);
+
+$processManager->signal; // Объект Kim1ne\MonitoringPhp\Cli\Script\Signal
+$processManager->whiteList; // Объект Kim1ne\MonitoringPhp\Cli\Script\WhiteList
+$processManager->getRunningProcesses(); // Возвращает запущенные процессы
+```
+
+### `Kim1ne\MonitoringPhp\Cli\Script\Signal`
+
+Центральный класс для работы с сигналами, из него должны регистрироваться обработчики сигналов, запускаться скрипта, останавливаться, обрабатываться heartbeat.
+```php
+use Bitrix\Main\DI\ServiceLocator;
+use Kim1ne\MonitoringPhp\Cli\Script\Signal;
+
+$signal = ServiceLocator::getInstance()->get(Signal::class);
+
+$signal->stop($pid); // Остановка процесса
+$heartbeatSignal = $signal->heartbeat($pid); // Получение статуса скрипта
+$signal->start('/local/php_interface/scripts/my_script.php'); // Запуск скрипта
+$signal->registerSignals(); // Заристрировать сигналы для получения heartbeat и данных завершения
+```
+
+### `Kim1ne\MonitoringPhp\Cli\Script\WhiteList`
+Класс для поиска скрипта по белым спискам.
+```php
+use Kim1ne\MonitoringPhp\Cli\Script\WhiteList;
+use Kim1ne\MonitoringPhp\Cli\Script\ScriptPath;
+
+$whiteList = new WhiteList(
+    new ScriptPath('/local/php_interface/scripts/'),
+    new ScriptPath('/local/modules/my.module/cron/'),
+    ...
+);
+
+$path = $whiteList->resolveAllowedPath('/local/php_interface/scripts/my_script.php'); // поиск скрипта  в директории если она добавлена в белый список
+```
+
+### `Kim1ne\MonitoringPhp\Cli\Script\ScriptPath`
+Класс содержит путь директории со скриптами и поиском скрипта в директории.
+```php
+use Kim1ne\MonitoringPhp\Cli\Script\ScriptPath;
+
+$scriptPath = new ScriptPath('/local/php_interface/scripts/', excludeFiles: ['cli_prolog.php']);
+
+$scriptPath->getScriptPath('my_script.php'); // соберёт полный путь до скрипта на основе директории и script_name
+$scripts = $scriptPath->getScripts(); // Соберёт все скрипты из директории
+```
 
 ## Известные проблемы
 - Когда скрипт php завершается с ошибкой `allowed memory size` его невозможно перехватить чтобы записать окончание работы скрипта с ошибкой. SIGKILL не перехватывается ничем.
